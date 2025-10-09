@@ -8,7 +8,7 @@ import (
 	"github.com/cpustejovsky/toggltrack/record"
 )
 
-func OutputStats(w *tabwriter.Writer, work float64, start, current, goal record.Record) {
+func OutputStats(w *tabwriter.Writer, work float64, start, current, goal record.Record, timeLeft float64) {
 	//Calculate minLeft
 	initialMinutes := start.TotalMinutes()
 	currentMinutes := current.TotalMinutes() + initialMinutes
@@ -49,6 +49,10 @@ func OutputStats(w *tabwriter.Writer, work float64, start, current, goal record.
 				int(minLeft)/60, int(minLeft)%60)
 		}
 		fmt.Fprintf(w, "Work Left\t%.0fh %.0fm\t%.1f%%\t\n", math.Floor((gapMin-workDone)/60.0), math.Mod((gapMin-workDone), 60.0), 100-goalPercentage)
+		timeLeft -= (work - workDone)
+		if timeLeft > 0 {
+			fmt.Fprintf(w, "Time Left\t%.0fh %.0fm\n", math.Floor(timeLeft/60.0), math.Mod(timeLeft, 60.0))
+		}
 	}
 	w.Flush()
 }

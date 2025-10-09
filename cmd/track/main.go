@@ -25,6 +25,8 @@ var (
 	ideal               = flags.Int("ideal", "IDEAL", 2, "The ideal time you want to reach this month")
 	showIdeal           = flags.Bool("showIdeal", "SHOW_IDEAL", true, "Whether you want to show your ideal goal")
 	weekendWork         = flags.Float64("weekendWork", "WEEKEND_WORK", 0.0, "Total minutes you want to work on Saturdays and Sundays")
+	endOfDayHr          = flags.Int("eod_hr", "EOD_HR", 21, "Hour your day ends (0 to 24 hours)")
+	endOfDayMin         = flags.Int("eod_min", "EOD_MIN", 0, "Minute your day ends (0 to 59 hours)")
 )
 
 func argsToInts(args ...string) []int {
@@ -67,5 +69,7 @@ func main() {
 		compare = Ideal
 	}
 	work := calc.CalculateWorkToday(compare.TotalMinutes() - start.TotalMinutes())
-	output.OutputStats(w, work, start, current, compare)
+	eod := time.Date(now.Year(), now.Month(), now.Day(), *endOfDayHr, *endOfDayMin, 0, 0, now.Location())
+	timeLeft := eod.Sub(now).Minutes()
+	output.OutputStats(w, work, start, current, compare, timeLeft)
 }
