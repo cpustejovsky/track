@@ -20,9 +20,9 @@ var (
 	compareMonth        = flags.Int("compareMonth", "COMPARE_MONTH", 1, "The month you are comparing to (1-12)")
 	compareMonth_hour   = flags.Int("compareMonth_hour", "COMPARE_MONTH_HOUR", 1, "Total hours for your most worked month")
 	compareMonth_minute = flags.Int("compareMonth_minute", "COMPARE_MONTH_MINUTE", 0, "Total minutes mod 60 for your most worked month")
+	ideal               = flags.Int("ideal", "IDEAL", 2, "The ideal amount you want to work this month (in hours)")
 	crunch              = flags.Bool("crunch", "CRUNCH", false, "Whether you want to work without weekend breaks")
 	showCompareMonth    = flags.Bool("showCompareMonth", "SHOW_COMPARE_MONTH", true, "Whether you want to show the month you're comparing to")
-	ideal               = flags.Float64("ideal", "IDEAL", 0.05, "The percentage you want to grow")
 	showIdeal           = flags.Bool("showIdeal", "SHOW_IDEAL", true, "Whether you want to show your ideal goal")
 	weekendWork         = flags.Float64("weekendWork", "WEEKEND_WORK", 0.0, "Total minutes you want to work on Saturdays and Sundays")
 )
@@ -45,9 +45,10 @@ func main() {
 	args := flag.Args()
 	date := time.Date(*compareYear, time.Month(*compareMonth), 1, 0, 0, 0, 0, time.UTC)
 	compareMonth := record.New(fmt.Sprintf("%s %d", date.Month(), date.Year()), *compareMonth_hour, *compareMonth_minute)
-	calc := calculator.New(*crunch, *weekendWork, *ideal)
-	i := calc.CalculateIdeal(compareMonth.TotalMinutes(), date)
-	Ideal := record.New("Ideal", int(math.Round(i/60.0)), 00)
+	// calc := calculator.New(*crunch, *weekendWork, *ideal)
+	// i := calc.CalculateIdeal(compareMonth.TotalMinutes(), date)
+	// Ideal := record.New("Ideal", int(math.Round(i/60.0)), 00)
+	Ideal := record.New("Ideal", *ideal, 00)
 	if len(args) < 4 {
 		log.Println("please provide hours and minutes")
 		os.Exit(1)
@@ -62,7 +63,6 @@ func main() {
 	start := record.New(nowName, (nums[0]), (nums[1]))
 	current := record.New(nowName, (nums[2]), (nums[3]))
 	// TODO: determine whether to keep or set conditionally
-	// fmt.Printf("Current time is %d:%02d\n", now.Hour(), now.Minute())
 	if *showCompareMonth {
 		OutputStats(w, start, current, compareMonth)
 	}
@@ -78,7 +78,6 @@ func OutputStats(w *tabwriter.Writer, start, current, goal record.Record) {
 	athMinutes := goal.TotalMinutes()
 	goalpercentage := (currentMinutes / athMinutes) * 100
 	//TODO: get this aligned?
-	// fmt.Fprintln(w, "\tTime\tPercentage")
 	fmt.Fprintf(w, "%s\t%.0fh %.0fm\t\n",
 		goal.Name(), goal.TotalMinutes()/60.0, math.Mod(goal.TotalMinutes(), 60.0))
 	curMin := current.TotalMinutes() + start.TotalMinutes()
@@ -92,7 +91,7 @@ func OutputStats(w *tabwriter.Writer, start, current, goal record.Record) {
 	} else {
 		//Calculate weekdays and weekend days
 		gapMin := athMinutes - curMin
-		calc := calculator.New(*crunch, *weekendWork, *ideal)
+		calc := calculator.New(*crunch, *weekendWork)
 		work := calc.CalculateWorkWeekDay(gapMin)
 		workDone := (currentMinutes - initialMinutes)
 

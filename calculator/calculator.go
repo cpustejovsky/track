@@ -8,18 +8,16 @@ import (
 type Calculator struct {
 	Crunch          bool
 	WeekendWorkTime float64
-	IdealPercent    float64
 }
 
 func Foobar() {
 
 }
 
-func New(crunch bool, weekendWorkTime, ideal float64) Calculator {
+func New(crunch bool, weekendWorkTime float64) Calculator {
 	return Calculator{
 		Crunch:          crunch,
 		WeekendWorkTime: weekendWorkTime,
-		IdealPercent:    ideal,
 	}
 }
 
@@ -66,17 +64,6 @@ func (c Calculator) CalculateWorkToday(gap float64) float64 {
 	} else {
 		return c.WeekendWorkTime
 	}
-}
-
-func (c Calculator) CalculateIdeal(minutes float64, ath time.Time) float64 {
-	weekdayATH := WeekdaysRemaining(1, ath)
-	weekendATH := WeekendDaysRemaining(1, ath)
-	weekdayCurrent := WeekdaysRemaining(1, time.Now())
-	weekendCurrent := WeekendDaysRemaining(1, time.Now())
-	weekDay := (minutes - (weekendATH * c.WeekendWorkTime)) / weekdayATH
-	weekDay *= c.IdealPercent
-	idealForMonth := (weekDay * weekdayCurrent) + (c.WeekendWorkTime * weekendCurrent)
-	return idealForMonth
 }
 
 func (c Calculator) CalculateWorkWeekDay(gap float64) float64 {
