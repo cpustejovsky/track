@@ -18,13 +18,13 @@ import (
 var (
 	compareYear         = flags.Int("compareYear", "COMPARE_YEAR", 1971, "The month you are comparing to (1-12)")
 	compareMonth        = flags.Int("compareMonth", "COMPARE_MONTH", 1, "The month you are comparing to (1-12)")
-	compareMonth_hour   = flags.Int("compareMonth_hour", "COMPARE_MONTH_HOUR", 1, "Total hours for your most worked month")
-	compareMonth_minute = flags.Int("compareMonth_minute", "COMPARE_MONTH_MINUTE", 0, "Total minutes mod 60 for your most worked month")
-	crunch              = flags.Bool("crunch", "CRUNCH", false, "Whether you want to work without weekend breaks")
+	compareMonth_hour   = flags.Int("compareMonth_hour", "COMPARE_MONTH_HOUR", 1, "Total hours for your most filled month")
+	compareMonth_minute = flags.Int("compareMonth_minute", "COMPARE_MONTH_MINUTE", 0, "Total minutes mod 60 for your most filled month")
+	crunch              = flags.Bool("crunch", "CRUNCH", false, "Whether you want to fill your time without weekend breaks")
 	showCompareMonth    = flags.Bool("showCompareMonth", "SHOW_COMPARE_MONTH", true, "Whether you want to show the month you're comparing to")
-	ideal               = flags.Int("ideal", "IDEAL", 2, "The ideal time you want to reach this month")
+	ideal               = flags.Int("ideal", "IDEAL", 2, "The ideal amount of hours you want to fill today")
 	showIdeal           = flags.Bool("showIdeal", "SHOW_IDEAL", true, "Whether you want to show your ideal goal")
-	weekendWork         = flags.Float64("weekendWork", "WEEKEND_WORK", 0.0, "Total minutes you want to work on Saturdays and Sundays")
+	weekendWork         = flags.Float64("weekendWork", "WEEKEND_WORK", 0.0, "Total minutes you want to fill on Saturdays and Sundays")
 	endOfDayHr          = flags.Int("eod_hr", "EOD_HR", 21, "Hour your day ends (0 to 24 hours)")
 	endOfDayMin         = flags.Int("eod_min", "EOD_MIN", 0, "Minute your day ends (0 to 59 hours)")
 )
@@ -65,10 +65,12 @@ func main() {
 	// TODO: determine whether to keep or set conditionally
 	// fmt.Printf("Current time is %d:%02d\n", now.Hour(), now.Minute())
 	compare := compareMonth
+	var work float64
 	if *showIdeal {
-		compare = Ideal
+		work = (Ideal.TotalMinutes() - start.TotalMinutes())
+	} else {
+		work = calc.CalculateWorkToday(compareMonth.TotalMinutes() - start.TotalMinutes())
 	}
-	work := calc.CalculateWorkToday(compare.TotalMinutes() - start.TotalMinutes())
 	eod := time.Date(now.Year(), now.Month(), now.Day(), *endOfDayHr, *endOfDayMin, 0, 0, now.Location())
 	timeLeft := eod.Sub(now).Minutes()
 	output.OutputStats(w, work, start, current, compare, timeLeft)
