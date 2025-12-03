@@ -67,7 +67,7 @@ func main() {
 	compare := compareMonth
 	var work float64
 	if *showIdeal {
-		work = (Ideal.TotalMinutes() - start.TotalMinutes())
+		work = Ideal.TotalMinutes()
 	} else {
 		work = calc.CalculateWorkToday(compareMonth.TotalMinutes() - start.TotalMinutes())
 	}
