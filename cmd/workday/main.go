@@ -80,8 +80,7 @@ func OutputStats(w *tabwriter.Writer, start, current, goal record.Record) {
 	//TODO: get this aligned?
 	fmt.Fprintf(w, "%s\t%.0fh %.0fm\t\n",
 		goal.Name(), goal.TotalMinutes()/60.0, math.Mod(goal.TotalMinutes(), 60.0))
-	curMin := current.TotalMinutes() + start.TotalMinutes()
-	fmt.Fprintf(w, "Work Done\t%dh %.0fm\t%.1f%%\t\n", int(curMin/60.0), math.Mod(curMin, 60.0), goalpercentage)
+	fmt.Fprintf(w, "Work Done\t%dh %.0fm\t%.1f%%\t\n", int(currentMinutes/60.0), math.Mod(currentMinutes, 60.0), goalpercentage)
 	if currentMinutes > athMinutes {
 		t := currentMinutes - athMinutes
 		fmt.Printf("%dhr %dm (%.1f%%) extra\n",
@@ -90,16 +89,15 @@ func OutputStats(w *tabwriter.Writer, start, current, goal record.Record) {
 			goalpercentage-100)
 	} else {
 		//Calculate weekdays and weekend days
-		gapMin := athMinutes - curMin
+		gapMin := athMinutes - currentMinutes
 		calc := calculator.New(*crunch, *weekendWork)
 		work := calc.CalculateWorkWeekDay(gapMin)
-		workDone := (currentMinutes - initialMinutes)
 
 		fmt.Printf("Workday Work: %dhr %dm (%dmin)\n",
 			int(work)/60, int(work)%60, int(work))
 		fmt.Printf("That's x<=%d pomodoros\n",
 			int(math.Ceil(work/25.0)))
-		fmt.Fprintf(w, "Work Left\t%dh %.0fm\t%.1f%%\t\n", int((gapMin-workDone)/60.0), math.Mod((gapMin-workDone), 60.0), 100-goalpercentage)
+		fmt.Fprintf(w, "Work Left\t%dh %.0fm\t%.1f%%\t\n", int((gapMin)/60.0), math.Mod((gapMin), 60.0), 100-goalpercentage)
 		w.Flush()
 	}
 }
