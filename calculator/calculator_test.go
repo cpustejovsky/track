@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cpustejovsky/toggltrack/calculator"
+	"github.com/cpustejovsky/track/calculator"
 )
 
 func TestDaysRemainingInMonth(t *testing.T) {

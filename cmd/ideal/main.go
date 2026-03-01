@@ -6,9 +6,9 @@ import (
 	"math"
 	"time"
 
-	"github.com/cpustejovsky/toggltrack/calculator"
-	"github.com/cpustejovsky/toggltrack/flags"
-	"github.com/cpustejovsky/toggltrack/record"
+	"github.com/cpustejovsky/track/calculator"
+	"github.com/cpustejovsky/track/flags"
+	"github.com/cpustejovsky/track/record"
 )
 
 var (

@@ -9,10 +9,10 @@ import (
 	"text/tabwriter"
 	"time"
 
-	"github.com/cpustejovsky/toggltrack/calculator"
-	"github.com/cpustejovsky/toggltrack/flags"
-	"github.com/cpustejovsky/toggltrack/output"
-	"github.com/cpustejovsky/toggltrack/record"
+	"github.com/cpustejovsky/track/calculator"
+	"github.com/cpustejovsky/track/flags"
+	"github.com/cpustejovsky/track/output"
+	"github.com/cpustejovsky/track/record"
 )
 
 var (

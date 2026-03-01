@@ -5,7 +5,7 @@ import (
 	"math"
 	"text/tabwriter"
 
-	"github.com/cpustejovsky/toggltrack/record"
+	"github.com/cpustejovsky/track/record"
 )
 
 func OutputStats(w *tabwriter.Writer, work float64, start, current, goal record.Record, timeLeft float64) {
