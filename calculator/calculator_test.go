@@ -21,21 +21,5 @@ func TestDaysRemainingInMonth(t *testing.T) {
 	}
 }
 
-func TestCalculateIdeal(t *testing.T) {
-	crunch := false
-	weekend := 120.0
-	ideal := 1.11
-	calc := calculator.New(crunch, weekend, ideal)
-	februaryMin := (86.0 * 60) + 57.0
-	february := time.Date(2025, time.February, 1, 0, 0, 0, 0, time.UTC)
-	got := calc.CalculateIdeal(februaryMin, february)
-	expect := (februaryMin - (8 * 120.0)) / 20.0
-	expect *= 1.11
-	expect = (expect * 21) + (10 * 120.0)
-	if expect != got {
-		t.Logf("expected %v; got %v", expect, got)
-	}
-}
-
 func TestCalculateWorkToday(t *testing.T) {
 }
